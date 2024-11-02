@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 class Users::SessionsController < Devise::SessionsController
   include RackSessionFix
-
+  
   respond_to :json
   private
 
   def respond_with(resource, _opts = {})
     if resource.persisted?
       render json: {
-        status: {code: 200, message: 'Logged in successfully.'},
+        status: { code: 200, message: 'Logged in successfully.' },
         data: UserSerializer.new(resource).serializable_hash[:data][:attributes]
       }, status: :ok
     else
       render json: {
-        status: {code: 401, message: 'Invalid email or password.'}
+        status: { code: 401, message: 'Invalid email or password.' }
       }, status: :unauthorized
     end
   end
@@ -32,3 +32,4 @@ class Users::SessionsController < Devise::SessionsController
     end
   end
 end
+
