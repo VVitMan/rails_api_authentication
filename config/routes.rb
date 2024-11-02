@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get '/current_user', to: 'current_user#index'
   # sets up authentication routes for the User model.
   # path: '' => remove the default "/users" prefix from all routes
   devise_for :users, path: '', path_names: {
