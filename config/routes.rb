@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  # get information of current user by use http://localhost:port/current_user
   get '/current_user', to: 'current_user#index'
   # sets up authentication routes for the User model.
   # path: '' => remove the default "/users" prefix from all routes
