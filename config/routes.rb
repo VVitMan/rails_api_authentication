@@ -1,21 +1,26 @@
 Rails.application.routes.draw do
-  # get information of current user by use http://localhost:port/current_user
+  # Define a route to get the information of the current logged-in user.
+  # Accessible via http://localhost:port/current_user.
   get '/current_user', to: 'current_user#index'
-  # sets up authentication routes for the User model.
-  # path: '' => remove the default "/users" prefix from all routes
+
+  # Sets up authentication routes for the User model with Devise.
+  # The `path: ''` option removes the default "/users" prefix from all routes, making URLs cleaner.
   devise_for :users, path: '', path_names: {
-    # Changes the sign-in route from /sign_in to /login.
+    # Changes the default Devise sign-in route from /sign_in to /login.
     sign_in: 'login',
-    # Changes the sign-out route from /sign_out to /logout.
+    # Changes the default Devise sign-out route from /sign_out to /logout.
     sign_out: 'logout',
-    # Changes the registration (sign-up) route from /sign_up to /signup.
+    # Changes the default Devise registration (sign-up) route from /sign_up to /signup.
     registration: 'signup'
   },
-  # uses custom controllers for sessions and registrations, allowing for any custom logic you need.
+  # Specifies custom controllers for handling session and registration actions, 
+  # allowing for any additional logic or custom responses.
   controllers: {
-    # Uses the Users::SessionsController at app/controllers/users/sessions_controller.rb
+    # Specifies the SessionsController to use for login and logout actions,
+    # defined in app/controllers/users/sessions_controller.rb.
     sessions: 'users/sessions',
-    # Uses the Users::RegistrationsController at app/controllers/users/registrations_controller.rb
+    # Specifies the RegistrationsController to use for sign-up and account deletion actions,
+    # defined in app/controllers/users/registrations_controller.rb.
     registrations: 'users/registrations'
   }
 end
