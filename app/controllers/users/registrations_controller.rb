@@ -1,82 +1,36 @@
 # frozen_string_literal: true
+# Custom RegistrationsController for handling user registration in a JSON API format.
+# Inherits from Devise's RegistrationsController for registration actions.
 class Users::RegistrationsController < Devise::RegistrationsController
+  # Include RackSessionFix to handle potential session issues in API requests
   include RackSessionFix
 
+  # Set the controller to respond to JSON format, suitable for API responses
   respond_to :json
+
   private
 
+  # Custom method to handle responses after registration or account deletion.
   def respond_with(resource, _opts = {})
+    # Check if the request is a POST request and the user (resource) is saved in the database.
     if request.method == "POST" && resource.persisted?
+      # Respond with a success message and serialized user data if sign-up is successful.
       render json: {
-        status: {code: 200, message: "Signed up sucessfully."},
+        status: { code: 200, message: "Signed up successfully." },
         data: UserSerializer.new(resource).serializable_hash[:data][:attributes]
       }, status: :ok
+    # Check if the request is a DELETE request, indicating an account deletion.
     elsif request.method == "DELETE"
+      # Respond with a success message if account deletion is successful.
       render json: {
-        status: { code: 200, message: "Account deleted successfully."}
+        status: { code: 200, message: "Account deleted successfully." }
       }, status: :ok
     else
+      # If the request is not successful, return an error message with specific validation errors.
       render json: {
-        status: {code: 422, message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}"}
+        status: { code: 422, message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}" }
       }, status: :unprocessable_entity
     end
   end
 end
-# before_action :configure_sign_up_params, only: [:create]
-# before_action :configure_account_update_params, only: [:update]
 
-# GET /resource/sign_up
-# def new
-#   super
-# end
-
-# POST /resource
-# def create
-#   super
-# end
-
-# GET /resource/edit
-# def edit
-#   super
-# end
-
-# PUT /resource
-# def update
-#   super
-# end
-
-# DELETE /resource
-# def destroy
-#   super
-# end
-
-# GET /resource/cancel
-# Forces the session data which is usually expired after sign
-# in to be expired now. This is useful if the user wants to
-# cancel oauth signing in/up in the middle of the process,
-# removing all OAuth session data.
-# def cancel
-#   super
-# end
-
-# protected
-
-# If you have extra params to permit, append them to the sanitizer.
-# def configure_sign_up_params
-#   devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute])
-# end
-
-# If you have extra params to permit, append them to the sanitizer.
-# def configure_account_update_params
-#   devise_parameter_sanitizer.permit(:account_update, keys: [:attribute])
-# end
-
-# The path used after sign up.
-# def after_sign_up_path_for(resource)
-#   super(resource)
-# end
-
-# The path used after sign up for inactive accounts.
-# def after_inactive_sign_up_path_for(resource)
-#   super(resource)
-# end
