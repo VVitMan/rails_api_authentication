@@ -13,16 +13,30 @@ Devise.setup do |config|
   config.navigational_formats = []
 
   # on every post request to login call, append JWT token to Authorization header as “Bearer” + token when there’s a successful response sent back and on a delete call to logout endpoint, the token should be revoked.
+  
+  # Configuring JWT (JSON Web Token) settings for user authentication.
   config.jwt do |jwt|
+    # Set the secret key used to encode and decode JWTs.
+    # The secret is fetched securely from Rails credentials (encrypted storage).
     jwt.secret = Rails.application.credentials.fetch(:secret_key_base)
+    
+    # Specify which requests should trigger a JWT to be issued.
+    # Here, a JWT is dispatched (issued) when a POST request is made to the /login endpoint.
     jwt.dispatch_requests = [
       ['POST', %r{^/login$}]
     ]
+    
+    # Specify which requests should trigger a JWT to be revoked.
+    # Here, a JWT is revoked when a DELETE request is made to the /logout endpoint.
     jwt.revocation_requests = [
       ['DELETE', %r{^/logout$}]
     ]
+    
+    # Set the expiration time for the JWT token, in seconds.
+    # The token will expire 30 minutes after being issued.
     jwt.expiration_time = 30.minutes.to_i
   end
+
 
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
